@@ -1,0 +1,23 @@
+# local archive of superseded experiments -- not part of the project
+_archive/
+
+# local editor / agent state
+.claude/
+
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/
+venv/
+
+# downloaded on demand by model/squad_strength.load_fifa (~10MB each),
+# needed only by the validation folds
+data/fifa2019.csv
+data/fifa2021.csv
+
+# generated outputs
+reliability*.png
+predictions.csv
+data/*_clean.csv
+data/sofifa_players.csv
+data/squad_strength_*.csv

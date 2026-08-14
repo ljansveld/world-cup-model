@@ -1,0 +1,13 @@
+# Core -- required by the predictor and the knockout simulator.
+numpy>=1.24
+pandas>=2.0
+scipy>=1.10
+requests>=2.28
+
+# Optional.
+#   matplotlib -- only for the reliability plot in calibrate.py. Without it the
+#                 calibration report still runs; it just skips the PNG.
+#   beautifulsoup4 -- only for sofifa_scraper.py, which rebuilds fc26.csv.
+#                     Not needed if you use the fc26.csv already in the repo.
+matplotlib>=3.7
+beautifulsoup4>=4.11
