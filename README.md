@@ -183,8 +183,8 @@ Flags:
 | `--home` | Give team 1 home advantage instead of a neutral venue. |
 | `--no-debias` | Ablate the confederation correction (sanity check). |
 | `--debias-weight=0.5` | Change the pull strength (default 0.7). |
-| `--scale` | Measure the uniform total calibration from completed games and apply it. |
-| `--scale=1.12` | Apply a manual goal-level factor. |
+| `--scale` | Optional: measure a uniform goal-level factor from completed games and apply it. Off by default. |
+| `--scale=1.12` | Optional: set that goal-level factor by hand. |
 | `--no-split-home` | Revert to a single-parameter home advantage. |
 
 ### Knockout simulation
@@ -242,7 +242,10 @@ minutes. It prints the pooled result the README table is drawn from. See
   signal, which is exactly what the correction needs — but they carry their own biases
   (players in less-watched domestic leagues get cheaper cards), which is why the correction
   is a partial pull toward the line rather than a replacement of the fitted coefficient.
-- Goal *level* and goal *shape* are separate problems. The de-bias fixes shape — which team
-  gets the goals. A uniform under-prediction of totals is left to `--scale`, off by default.
+- Goal *level* (how many goals a fixture produces) and goal *shape* (which side gets them)
+  are separate axes. The de-bias acts on shape, and measurably improved the totals markets
+  too — Over 2.5 log loss fell from 0.7379 to 0.7101 on the validation folds. `--scale` is
+  the independent lever on level; it is off by default and the model is not fit assuming
+  any standing correction.
 - Shootouts are modelled as coin flips. Attempts to predict them from team strength are
   not well supported by the historical record.

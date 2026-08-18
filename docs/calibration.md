@@ -9,7 +9,11 @@ This is a distinct failure mode from getting matchups wrong. A model can rank te
 correctly and still get the *level* of scoring wrong, which quietly distorts every total,
 BTTS and correct-score number it produces without ever showing up in W/D/L accuracy.
 If the level is off, this script also fits the correction: a single scale factor `c` on
-both lambdas.
+both lambdas, which is what `--scale` applies.
+
+This is a **check you run**, not a defect being reported. The model ships with `--scale`
+off and assumes no standing correction. Re-run this against a completed tournament if you
+want to confirm the level for that specific goal environment.
 
 Runs locally next to `model/matchup.py` / `model/dixon_coles.py`. Realized scores come from the same
 martj42 `results.csv` the model trains on, so there is no separate results file.
@@ -80,8 +84,9 @@ with open("predictions.csv", "w", newline="") as f:
 ## Where Elo fits, and where it doesn't
 
 Decompose a prediction into **supremacy** (expected goal *difference*) and **expectancy**
-(expected goal *total*). A totals bias is an expectancy problem — fix it with the scale
-factor `c`, not with Elo, which informs supremacy and is near-silent on the total.
+(expected goal *total*). If a totals bias ever does turn up, it is an expectancy problem —
+addressed with the scale factor `c`, not with Elo, which informs supremacy and is
+near-silent on the total.
 
 Elo is still worth considering for a separate reason: international Dixon-Coles is poorly
 identified across confederations that rarely meet, and Elo propagates strength across those

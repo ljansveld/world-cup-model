@@ -62,9 +62,9 @@ is preserved) and tail teams — where bias and genuine signal are confounded �
 get a proportionally gentler one. shrink=None reproduces the old behaviour
 EXACTLY. Attack and defence are shrunk against their own sigmas, separately.
 
-A residual UNIFORM total under-bias (~-0.5 goals on these WCs) is NOT this
-module's job — it is left to the --scale calibration. De-bias fixes the SHAPE
-(which team gets the goals); --scale fixes the LEVEL. They are orthogonal.
+This module works on the SHAPE of a prediction (which side gets the goals). The
+LEVEL of scoring is a separate, orthogonal axis owned by the optional --scale
+calibration, which is off by default.
 
 British spelling (defence) kept to match the codebase.
 """

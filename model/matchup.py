@@ -49,22 +49,25 @@ from model.squad_debias import debias_coefficients, estimate_total_calibration
 # non-UEFA defences get systematically over-credited against the UEFA attack
 # scale they are crossed with. That single-coefficient bias -- e.g. Paraguay's
 # defence rated world-13 when the global squad line says ~world-55 -- is what
-# collapsed France's xG from ~2.5 to 1.5 and manufactured the phantom unders.
+# collapsed France's xG from ~2.5 to 1.5 and dragged its match totals down with it.
 # We correct it ONCE, in coefficient space, right after the DC fit: pull each
 # team's att/def a fraction SQUAD_DEBIAS_WEIGHT toward the global squad-implied
 # line. Surgical (only off-line/biased teams move), asymmetric (att & def fixed
 # separately, so an over-credited opponent defence is corrected without touching
 # the underdog's own scoring), and free per matchup (coefficients are already
 # fixed). CV (2018+2022) best ~0.7-0.8; kept conservative at 0.7 given n=128.
-# A residual UNIFORM total under-bias is NOT this knob -- that is --scale.
 SQUAD = None                 # SquadRatings, for the ratings CSV path / coverage
 SQUAD_DEBIAS_WEIGHT = 0.7
 SQUAD_COV_FULL = 12          # (kept for back-compat with any callers)
 
-# Uniform total calibration (the LEVEL knob). OFF by default -- the raw model is
-# what you get. Pass --scale to turn on the DATA-MEASURED calibration (reads the
-# goal regime off the completed games of the live tournament; see
-# estimate_total_calibration). Pass --scale=1.12 for a manual factor.
+# Uniform total calibration -- the LEVEL knob, independent of the de-bias above
+# (which acts on SHAPE: which side gets the goals). OFF by default; the raw fit
+# is what you get, and nothing downstream assumes a standing correction.
+# It exists because the goal environment of a given tournament can run above or
+# below the four-year training window, and that is a level effect no rating
+# correction addresses. Pass --scale to measure the factor from the completed
+# games of the live tournament (see estimate_total_calibration), or --scale=1.12
+# to set one by hand.
 # Internally: 1.0 = off, None = "measure it at fit time", a number = that factor.
 MATCHUP_SCALE = 1.0
 
@@ -122,11 +125,12 @@ def matchup(dc: DixonColesModel, home: str, away: str, neutral: bool = True,
             scale: float = None):
     """Return xG for both sides plus the Dixon-Coles scoreline distribution.
 
-    `scale` multiplies both xG values (calibration: the fit runs ~12% low on goals,
-    which biases every total downward). When None, it reads the module-level
-    MATCHUP_SCALE (set by the --scale CLI flag), so the correction flows through
-    report() and the knockout simulator automatically. Every downstream market --
-    matrix, totals, spread, BTTS -- is built from these xG values, so all inherit it.
+    `scale` multiplies both xG values -- an optional, uniform adjustment to the goal
+    LEVEL, off by default (1.0). Use it when a tournament's scoring environment runs
+    above or below the training window. When None, it reads the module-level
+    MATCHUP_SCALE (set by the --scale CLI flag), so it flows through report() and the
+    knockout simulator automatically. Every downstream market -- matrix, totals,
+    spread, BTTS -- is built from these xG values, so all inherit it.
     """
     for t in (home, away):
         if t not in dc.attack:
@@ -140,8 +144,8 @@ def matchup(dc: DixonColesModel, home: str, away: str, neutral: bool = True,
 
     # dc.attack / dc.defence are already de-biased in fit_model() (squad_debias),
     # so the confederation-scale correction is baked into the coefficients and
-    # every downstream market inherits it. The only remaining knob is --scale,
-    # the UNIFORM total calibration (the model still runs a touch light on goals).
+    # every downstream market inherits it. --scale is the separate, optional
+    # LEVEL knob and is 1.0 (no-op) unless explicitly requested.
     if scale is None:
         scale = globals().get("MATCHUP_SCALE") or 1.0
     xg_home *= scale
