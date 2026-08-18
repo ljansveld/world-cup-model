@@ -3,6 +3,10 @@ _archive/
 
 # local editor / agent state
 .claude/
+.Rhistory
+.Rapp.history
+.RData
+.Rproj.user/
 
 __pycache__/
 *.py[cod]
