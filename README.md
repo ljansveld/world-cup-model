@@ -148,7 +148,7 @@ Python 3.10+.
 pip install -r requirements.txt
 ```
 
-The core model needs only `numpy`, `pandas`, `scipy` and `requests`. `matplotlib` is
+The core model only needs `numpy`, `pandas`, `scipy` and `requests`. `matplotlib` is
 optional (the calibration report skips its plot without it) and `beautifulsoup4` is only
 needed to re-run the scraper.
 
@@ -181,7 +181,7 @@ Flags:
 | Flag | Effect |
 |---|---|
 | `--home` | Give team 1 home advantage instead of a neutral venue. |
-| `--no-debias` | Ablate the confederation correction (sanity check). |
+| `--no-debias` | Remove the confederation correction (sanity check). |
 | `--debias-weight=0.5` | Change the pull strength (default 0.7). |
 | `--scale` | Optional: measure a uniform goal-level factor from completed games and apply it. Off by default. |
 | `--scale=1.12` | Optional: set that goal-level factor by hand. |
@@ -247,5 +247,5 @@ minutes. It prints the pooled result the README table is drawn from. See
   too — Over 2.5 log loss fell from 0.7379 to 0.7101 on the validation folds. `--scale` is
   the independent lever on level; it is off by default and the model is not fit assuming
   any standing correction.
-- Shootouts are modelled as coin flips. Attempts to predict them from team strength are
+- Penalty kicks are modelled as coin flips. Attempts to predict them from team strength are
   not well supported by the historical record.
